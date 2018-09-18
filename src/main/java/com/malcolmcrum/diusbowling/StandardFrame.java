@@ -1,29 +1,55 @@
 package com.malcolmcrum.diusbowling;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 
 public class StandardFrame implements Frame {
-	private List<Integer> deliveries = new ArrayList<>();
+	private Integer firstDelivery = null;
+	private Integer secondDelivery = null;
 
 	@Override
 	public void addDelivery(int pinsKnockedDown) {
 		Preconditions.check(pinsRemaining() >= pinsKnockedDown, "Tried to knock down more pins than are standing");
-		Preconditions.check(deliveries.size() < 2, "Not allowed more than 2 deliveries");
-		deliveries.add(pinsKnockedDown);
+		Preconditions.check(firstDelivery == null || secondDelivery == null, "Not allowed more than 2 deliveries");
+		if (firstDelivery == null) {
+			firstDelivery = pinsKnockedDown;
+		} else {
+			secondDelivery = pinsKnockedDown;
+		}
 	}
 
 	@Override
 	public boolean isAnotherDeliveryAllowed() {
-		return pinsRemaining() > 0 && deliveries.size() <= 1;
+		return pinsRemaining() > 0 && secondDelivery == null;
 	}
 
 	private int pinsRemaining() {
-		return INITIAL_PINS - deliveries.stream().mapToInt(i -> i).sum();
+		return INITIAL_PINS - getFirstDeliveryScore().orElse(0) - getSecondDeliveryScore().orElse(0);
 	}
 
 	@Override
-	public int getScore() {
-		return INITIAL_PINS - 10;
+	public boolean isStrike() {
+		return firstDelivery != null && firstDelivery == 10;
+	}
+
+	@Override
+	public boolean isSpare() {
+		return !isStrike() && secondDelivery != null && firstDelivery + secondDelivery == 10;
+	}
+
+	@Override
+	public Optional<Integer> getFirstDeliveryScore() {
+		return Optional.ofNullable(firstDelivery);
+	}
+
+	@Override
+	public Optional<Integer> getSecondDeliveryScore() {
+		return Optional.ofNullable(secondDelivery);
+	}
+
+	@Override
+	public String toString() {
+		String firstScore = firstDelivery != null ? firstDelivery.toString() : "?";
+		String secondScore = secondDelivery != null ? secondDelivery.toString() : "?";
+		return String.format("%s/%s", firstScore, secondScore);
 	}
 }

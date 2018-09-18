@@ -16,15 +16,22 @@ public class BowlingGameTest {
 	}
 
 	@Test(expected = GameOverException.class)
-	public void tooManyRolls() {
+	public void tooManyMisses() {
 		for (int i = 0; i < MAX_FRAMES * 2 + 2; ++i) {
 			game.roll(0);
 		}
 	}
 
+	@Test(expected = GameOverException.class)
+	public void tooManyStrikes() {
+		for (int i = 0; i < MAX_FRAMES + 1; ++i) {
+			game.roll(10);
+		}
+	}
+
 	@Test
 	public void maxScore() {
-		for (int i = 0; i < MAX_FRAMES + 1; ++i) {
+		for (int i = 0; i < MAX_FRAMES; ++i) {
 			game.roll(10);
 		}
 
@@ -59,7 +66,19 @@ public class BowlingGameTest {
 
 		int score = game.score();
 
-		assertEquals(15, score);
+		assertEquals(16, score);
+	}
+
+	@Test
+	public void consecutiveSpares() {
+		game.roll(5);
+		game.roll(5);
+		game.roll(5);
+		game.roll(5);
+
+		int score = game.score();
+
+		assertEquals(25, score);
 	}
 
 }

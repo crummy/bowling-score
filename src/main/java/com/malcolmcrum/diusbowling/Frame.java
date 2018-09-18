@@ -1,5 +1,7 @@
 package com.malcolmcrum.diusbowling;
 
+import java.util.Optional;
+
 public interface Frame {
 	int INITIAL_PINS = 10;
 
@@ -7,5 +9,11 @@ public interface Frame {
 
 	boolean isAnotherDeliveryAllowed();
 
-	int getScore();
+	boolean isStrike();
+
+	boolean isSpare();
+
+	Optional<Integer> getFirstDeliveryScore();
+
+	Optional<Integer> getSecondDeliveryScore();
 }
