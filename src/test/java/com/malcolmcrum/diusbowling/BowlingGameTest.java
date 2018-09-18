@@ -17,9 +17,20 @@ public class BowlingGameTest {
 
 	@Test(expected = GameOverException.class)
 	public void testTooManyRolls() {
-		for (int i = 0; i < MAX_FRAMES * 2 + 1; ++i) {
+		for (int i = 0; i < MAX_FRAMES * 2 + 2; ++i) {
 			game.roll(0);
 		}
+	}
+
+	@Test
+	public void testMaxScore() {
+		for (int i = 0; i < MAX_FRAMES + 1; ++i) {
+			game.roll(10);
+		}
+
+		int score = game.score();
+
+		assertEquals(300, score);
 	}
 
 }

@@ -17,7 +17,7 @@ class BowlingGame {
 	}
 
 	void roll(int numberOfPins) {
-		if (getLatestFrame().isDeliveryAllowed() == false) {
+		if (getLatestFrame().isAnotherDeliveryAllowed() == false) {
 			addFrame();
 		}
 		getLatestFrame().addDelivery(numberOfPins);

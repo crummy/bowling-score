@@ -7,7 +7,7 @@ public class TenthFrame implements Frame {
 	}
 
 	@Override
-	public boolean isDeliveryAllowed() {
+	public boolean isAnotherDeliveryAllowed() {
 		return false;
 	}
 
