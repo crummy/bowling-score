@@ -24,16 +24,18 @@ public class BowlingGameTest {
 
 	@Test(expected = GameOverException.class)
 	public void tooManyStrikes() {
-		for (int i = 0; i < MAX_FRAMES + 1; ++i) {
+		for (int i = 0; i < MAX_FRAMES + 3; ++i) {
 			game.roll(10);
 		}
 	}
 
 	@Test
 	public void maxScore() {
-		for (int i = 0; i < MAX_FRAMES; ++i) {
+		for (int i = 0; i < MAX_FRAMES + 2; ++i) {
 			game.roll(10);
+			System.out.println("Score after roll " + (i + 1) + ": " + game.score());
 		}
+		System.out.println(game.prettyScore());
 
 		int score = game.score();
 

@@ -16,4 +16,8 @@ public interface Frame {
 	Optional<Integer> getFirstDeliveryScore();
 
 	Optional<Integer> getSecondDeliveryScore();
+
+	default int pinsRemaining() {
+		return INITIAL_PINS - getFirstDeliveryScore().orElse(0) - getSecondDeliveryScore().orElse(0);
+	}
 }

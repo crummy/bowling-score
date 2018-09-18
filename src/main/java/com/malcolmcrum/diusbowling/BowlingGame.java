@@ -12,17 +12,40 @@ class BowlingGame {
 
 	int score() {
 		int score = 0;
-		for (int i = 0; i < frames.size(); ++i) {
-			Frame frame = frames.get(i);
-			if (frame.isStrike()) {
-				score += 10 + strikeBonus(i);
-			} else if (frame.isSpare()) {
-				score += 10 + spareBonus(i);
-			} else {
-				score += frame.getFirstDeliveryScore().orElse(0) + frame.getSecondDeliveryScore().orElse(0);
+		for (int frame = 0; frame < frames.size(); ++frame) {
+			if (frame < 9) {
+				score += calculateStandardFrameScore(frame);
+			} else if (frame == 9) {
+				score += calculateTenthFrameScore();
 			}
 		}
 		return score;
+	}
+
+	String prettyScore() {
+		String prettyScore = "";
+		for (int frame = 0; frame < frames.size(); ++frame) {
+			prettyScore += "Frame " + (frame + 1) + ": " + frames.get(frame) + "\n";
+		}
+		return prettyScore;
+	}
+
+	private int calculateStandardFrameScore(int frameIndex) {
+		StandardFrame frame = (StandardFrame)frames.get(frameIndex);
+		if (frame.isStrike()) {
+			return 10 + strikeBonus(frameIndex);
+		} else if (frame.isSpare()) {
+			return 10 + spareBonus(frameIndex);
+		} else {
+			return frame.getFirstDeliveryScore().orElse(0) + frame.getSecondDeliveryScore().orElse(0);
+		}
+	}
+
+	private int calculateTenthFrameScore() {
+		TenthFrame frame = (TenthFrame)frames.get(9);
+		return frame.getFirstDeliveryScore().orElse(0) +
+				frame.getSecondDeliveryScore().orElse(0) +
+				frame.getThirdDeliveryScore().orElse(0);
 	}
 
 	private int spareBonus(int frameIndex) {
@@ -59,6 +82,8 @@ class BowlingGame {
 	private void addFrame() {
 		if (frames.size() >= 10) {
 			throw new GameOverException();
+		} else if (frames.size() == 9) {
+			frames.add(new TenthFrame());
 		} else {
 			frames.add(new StandardFrame());
 		}
