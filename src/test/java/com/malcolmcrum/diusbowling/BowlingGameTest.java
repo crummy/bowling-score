@@ -33,9 +33,7 @@ public class BowlingGameTest {
 	public void maxScore() {
 		for (int i = 0; i < MAX_FRAMES + 2; ++i) {
 			game.roll(10);
-			System.out.println("Score after roll " + (i + 1) + ": " + game.score());
 		}
-		System.out.println(game.prettyScore());
 
 		int score = game.score();
 

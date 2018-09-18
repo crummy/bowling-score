@@ -22,14 +22,6 @@ class BowlingGame {
 		return score;
 	}
 
-	String prettyScore() {
-		String prettyScore = "";
-		for (int frame = 0; frame < frames.size(); ++frame) {
-			prettyScore += "Frame " + (frame + 1) + ": " + frames.get(frame) + "\n";
-		}
-		return prettyScore;
-	}
-
 	private int calculateStandardFrameScore(int frameIndex) {
 		StandardFrame frame = (StandardFrame)frames.get(frameIndex);
 		if (frame.isStrike()) {
@@ -91,5 +83,17 @@ class BowlingGame {
 
 	private Frame getLatestFrame() {
 		return frames.get(frames.size() - 1);
+	}
+
+	String getScoreCard() {
+		String prettyScore = "";
+		for (int frame = 0; frame < frames.size(); ++frame) {
+			prettyScore += "Frame " + (frame + 1) + ": " + frames.get(frame) + "\n";
+		}
+		return prettyScore;
+	}
+
+	boolean canStillRoll() {
+		return frames.size() < 10 || frames.get(9).isAnotherDeliveryAllowed();
 	}
 }
