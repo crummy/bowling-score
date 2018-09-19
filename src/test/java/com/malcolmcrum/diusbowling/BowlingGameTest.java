@@ -3,7 +3,8 @@ package com.malcolmcrum.diusbowling;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static com.malcolmcrum.diusbowling.Preconditions.*;
+import static org.junit.Assert.assertEquals;
 
 public class BowlingGameTest {
 
@@ -17,27 +18,54 @@ public class BowlingGameTest {
 
 	@Test(expected = GameOverException.class)
 	public void tooManyMisses() {
-		for (int i = 0; i < MAX_FRAMES * 2 + 2; ++i) {
-			game.roll(0);
-		}
+		repeat(22, () -> game.roll(0));
 	}
 
 	@Test(expected = GameOverException.class)
 	public void tooManyStrikes() {
-		for (int i = 0; i < MAX_FRAMES + 3; ++i) {
-			game.roll(10);
-		}
+		repeat(13, () -> game.roll(10));
 	}
 
 	@Test
 	public void maxScore() {
-		for (int i = 0; i < MAX_FRAMES + 2; ++i) {
-			game.roll(10);
-		}
+		repeat(12, () -> game.roll(10));
 
 		int score = game.score();
 
 		assertEquals(300, score);
+	}
+
+	@Test
+	public void maxScore_missedLastStrike() {
+		repeat(11, () -> game.roll(10));
+		game.roll(9);
+
+		int score = game.score();
+
+		assertEquals(299, score);
+	}
+
+	@Test
+	public void maxScore_missedSecondToLastStrike() {
+		repeat(10, () -> game.roll(10));
+		game.roll(9);
+		game.roll(1);
+
+		int score = game.score();
+
+		assertEquals(289, score);
+	}
+
+	@Test
+	public void maxScore_spareInTenthFrame() {
+		repeat(9, () -> game.roll(10));
+		game.roll(5);
+		game.roll(5);
+		game.roll(10);
+
+		int score = game.score();
+
+		assertEquals(275, score);
 	}
 
 	@Test
@@ -71,14 +99,28 @@ public class BowlingGameTest {
 
 	@Test
 	public void consecutiveSpares() {
-		game.roll(5);
-		game.roll(5);
-		game.roll(5);
-		game.roll(5);
+		repeat(4, () -> game.roll(5));
 
 		int score = game.score();
 
 		assertEquals(25, score);
+	}
+
+	@Test(expected = PreconditionFailed.class)
+	public void impossibleSingleDelivery() {
+		game.roll(11);
+	}
+
+	@Test(expected = PreconditionFailed.class)
+	public void impossibleConsecutiveDelivery() {
+		game.roll(5);
+		game.roll(6);
+	}
+
+	private static void repeat(int times, Runnable runnable) {
+		for (int i = 0; i < times; ++i ) {
+			runnable.run();
+		}
 	}
 
 }
