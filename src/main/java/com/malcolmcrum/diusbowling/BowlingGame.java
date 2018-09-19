@@ -6,10 +6,6 @@ import java.util.List;
 class BowlingGame {
 	private List<Frame> frames = new ArrayList<>();
 
-	BowlingGame() {
-		frames.add(new StandardFrame());
-	}
-
 	int score() {
 		int score = 0;
 		for (int frame = 0; frame < frames.size(); ++frame) {
@@ -65,7 +61,7 @@ class BowlingGame {
 	}
 
 	void roll(int numberOfPins) {
-		if (getLatestFrame().isAnotherDeliveryAllowed() == false) {
+		if (frames.isEmpty() || !getLatestFrame().isAnotherDeliveryAllowed()) {
 			addFrame();
 		}
 		getLatestFrame().addDelivery(numberOfPins);
